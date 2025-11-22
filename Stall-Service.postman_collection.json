@@ -1,0 +1,1096 @@
+{
+	"info": {
+		"_postman_id": "stall-service-collection",
+		"name": "Stall Service API",
+		"description": "Complete API collection for ExhibitFlow Stall Service with OAuth2/JWT authentication via Keycloak",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://miniature-space-fortnight-p9945qrp4xpf7q46-8081.app.github.dev",
+			"type": "string"
+		},
+		{
+			"key": "keycloakUrl",
+			"value": "https://miniature-space-fortnight-p9945qrp4xpf7q46-8080.app.github.dev",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "client_id",
+			"value": "stall-service",
+			"type": "string"
+		},
+		{
+			"key": "client_secret",
+			"value": "stall-service-secret-key-2024",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health & Actuator",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						},
+						"description": "Check the health status of the Stall Service (no authentication required)"
+					},
+					"response": []
+				}
+			],
+			"description": "Health check and actuator endpoints (public, no auth required)"
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Get Token - Admin User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+									"    console.log(\"Access token saved to collection variable\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token",
+							"host": [
+								"{{keycloakUrl}}"
+							],
+							"path": [
+								"realms",
+								"exhibitflow",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						},
+						"description": "Get access token for admin user (full access)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Token - Manager User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+									"    console.log(\"Access token saved to collection variable\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "manager",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "manager123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token",
+							"host": [
+								"{{keycloakUrl}}"
+							],
+							"path": [
+								"realms",
+								"exhibitflow",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						},
+						"description": "Get access token for manager user (management access)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Token - Viewer User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+									"    console.log(\"Access token saved to collection variable\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "viewer",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "viewer123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token",
+							"host": [
+								"{{keycloakUrl}}"
+							],
+							"path": [
+								"realms",
+								"exhibitflow",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						},
+						"description": "Get access token for viewer user (read-only access)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Token - Service Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+									"    console.log(\"Access token saved to collection variable\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token",
+							"host": [
+								"{{keycloakUrl}}"
+							],
+							"path": [
+								"realms",
+								"exhibitflow",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						},
+						"description": "Get access token using client credentials (service account)"
+					},
+					"response": []
+				}
+			],
+			"description": "OAuth2/JWT authentication endpoints via Keycloak. Run one of these first to get an access token."
+		},
+		{
+			"name": "Stalls - List & Filter",
+			"item": [
+				{
+					"name": "Get All Stalls",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							]
+						},
+						"description": "Get all stalls with default pagination (20 items per page)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stalls with Pagination",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page number (0-indexed)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Number of items per page"
+								}
+							]
+						},
+						"description": "Get stalls with custom pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter by Status - Available",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?status=AVAILABLE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "AVAILABLE",
+									"description": "Filter by AVAILABLE status"
+								}
+							]
+						},
+						"description": "Get all available stalls"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter by Status - Held",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?status=HELD",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "HELD",
+									"description": "Filter by HELD status"
+								}
+							]
+						},
+						"description": "Get all held stalls"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter by Status - Reserved",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?status=RESERVED",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "RESERVED",
+									"description": "Filter by RESERVED status"
+								}
+							]
+						},
+						"description": "Get all reserved stalls"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter by Size - Small",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?stallSize=SMALL",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "stallSize",
+									"value": "SMALL",
+									"description": "Filter by SMALL size"
+								}
+							]
+						},
+						"description": "Get all small stalls"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter by Size - Medium",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?stallSize=MEDIUM",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "stallSize",
+									"value": "MEDIUM",
+									"description": "Filter by MEDIUM size"
+								}
+							]
+						},
+						"description": "Get all medium stalls"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter by Size - Large",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?stallSize=LARGE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "stallSize",
+									"value": "LARGE",
+									"description": "Filter by LARGE size"
+								}
+							]
+						},
+						"description": "Get all large stalls"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter by Location",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?location=Hall A",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "location",
+									"value": "Hall A",
+									"description": "Filter by location (partial match)"
+								}
+							]
+						},
+						"description": "Search stalls by location (partial match)"
+					},
+					"response": []
+				},
+				{
+					"name": "Combined Filters - Available Large Stalls",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?status=AVAILABLE&stallSize=LARGE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "AVAILABLE"
+								},
+								{
+									"key": "stallSize",
+									"value": "LARGE"
+								}
+							]
+						},
+						"description": "Get available large stalls using multiple filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Combined Filters - Available Medium in Hall A",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?status=AVAILABLE&stallSize=MEDIUM&location=Hall A",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "AVAILABLE"
+								},
+								{
+									"key": "stallSize",
+									"value": "MEDIUM"
+								},
+								{
+									"key": "location",
+									"value": "Hall A"
+								}
+							]
+						},
+						"description": "Get available medium stalls in Hall A"
+					},
+					"response": []
+				}
+			],
+			"description": "List and filter stalls with various criteria and pagination"
+		},
+		{
+			"name": "Stalls - Get by ID/Code",
+			"item": [
+				{
+					"name": "Get Stall by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls",
+								"1"
+							]
+						},
+						"description": "Get a specific stall by its ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stall by Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls/code/A-001",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls",
+								"code",
+								"A-001"
+							]
+						},
+						"description": "Get a specific stall by its code"
+					},
+					"response": []
+				}
+			],
+			"description": "Retrieve individual stalls by ID or code"
+		},
+		{
+			"name": "Stalls - Create & Update",
+			"item": [
+				{
+					"name": "Create Stall",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"TEST-001\",\n  \"size\": \"MEDIUM\",\n  \"location\": \"Test Hall - Section A\",\n  \"price\": 1200.00\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							]
+						},
+						"description": "Create a new stall. Size must be: SMALL, MEDIUM, or LARGE"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Stall",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"location\": \"Hall A - North Wing, Row 1 - Updated\",\n  \"price\": 550.00\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls",
+								"1"
+							]
+						},
+						"description": "Update an existing stall. All fields are optional."
+					},
+					"response": []
+				}
+			],
+			"description": "Create and update stalls"
+		},
+		{
+			"name": "Stalls - State Management",
+			"item": [
+				{
+					"name": "Hold Stall",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls/1/hold",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls",
+								"1",
+								"hold"
+							]
+						},
+						"description": "Hold a stall (changes status to HELD). Idempotent operation."
+					},
+					"response": []
+				},
+				{
+					"name": "Release Stall",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls/1/release",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls",
+								"1",
+								"release"
+							]
+						},
+						"description": "Release a stall (changes status to AVAILABLE). Idempotent operation."
+					},
+					"response": []
+				},
+				{
+					"name": "Reserve Stall",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls/1/reserve",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls",
+								"1",
+								"reserve"
+							]
+						},
+						"description": "Reserve a stall (changes status to RESERVED). Idempotent operation."
+					},
+					"response": []
+				}
+			],
+			"description": "Manage stall state transitions (hold, release, reserve)"
+		},
+		{
+			"name": "Test Scenarios",
+			"item": [
+				{
+					"name": "Scenario - Find Available Medium Stalls in Hall A",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?status=AVAILABLE&stallSize=MEDIUM&location=Hall A",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "AVAILABLE"
+								},
+								{
+									"key": "stallSize",
+									"value": "MEDIUM"
+								},
+								{
+									"key": "location",
+									"value": "Hall A"
+								}
+							]
+						},
+						"description": "Business scenario: Find available medium-sized stalls in Hall A"
+					},
+					"response": []
+				},
+				{
+					"name": "Scenario - Get Premium Outdoor Stalls",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls?location=Outdoor&stallSize=LARGE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							],
+							"query": [
+								{
+									"key": "location",
+									"value": "Outdoor"
+								},
+								{
+									"key": "stallSize",
+									"value": "LARGE"
+								}
+							]
+						},
+						"description": "Business scenario: Find large outdoor stalls"
+					},
+					"response": []
+				},
+				{
+					"name": "Scenario - Workflow Test (Hold-Reserve-Release)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Step 1: Hold the stall",
+									"if (pm.info.requestName.includes(\"Hold\")) {",
+									"    pm.test(\"Stall is held\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData.status).to.eql(\"HELD\");",
+									"    });",
+									"}",
+									"",
+									"// Step 2: Reserve the stall",
+									"if (pm.info.requestName.includes(\"Reserve\")) {",
+									"    pm.test(\"Stall is reserved\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData.status).to.eql(\"RESERVED\");",
+									"    });",
+									"}",
+									"",
+									"// Step 3: Release the stall",
+									"if (pm.info.requestName.includes(\"Release\")) {",
+									"    pm.test(\"Stall is available\", function () {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData.status).to.eql(\"AVAILABLE\");",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls/2/hold",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls",
+								"2",
+								"hold"
+							]
+						},
+						"description": "Complete workflow: Hold -> Reserve -> Release a stall"
+					},
+					"response": []
+				}
+			],
+			"description": "Real-world test scenarios and workflows"
+		},
+		{
+			"name": "Error Cases",
+			"item": [
+				{
+					"name": "Get Non-existent Stall",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls/99999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls",
+								"99999"
+							]
+						},
+						"description": "Test error handling for non-existent stall (expects 404)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Stall - Missing Required Fields",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"INCOMPLETE\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							]
+						},
+						"description": "Test validation error handling (expects 400)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Stall - Duplicate Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"A-001\",\n  \"size\": \"SMALL\",\n  \"location\": \"Test Location\",\n  \"price\": 100.00\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							]
+						},
+						"description": "Test duplicate code error handling (expects 409)"
+					},
+					"response": []
+				},
+				{
+					"name": "Unauthorized Access",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stalls",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stalls"
+							]
+						},
+						"description": "Test authentication requirement (expects 401)"
+					},
+					"response": []
+				}
+			],
+			"description": "Test error handling and validation"
+		}
+	]
+}

@@ -63,11 +63,13 @@ services:
       timeout: 10s
       retries: 5
 
-  # Keycloak (Optional - for OAuth2)
+  # Keycloak (OAuth2 Authorization Server)
   keycloak:
     image: quay.io/keycloak/keycloak:23.0
     container_name: stall-keycloak
-    command: start-dev
+    command: 
+      - start-dev
+      - --import-realm
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
@@ -75,8 +77,14 @@ services:
       KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-stalldb}
       KC_DB_USERNAME: ${POSTGRES_USER:-stalluser}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-stallpass}
+      KC_HTTP_RELATIVE_PATH: /
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HTTP_ENABLED: true
     ports:
       - "${KEYCLOAK_PORT:-8080}:8080"
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
     depends_on:
       postgres:
         condition: service_healthy
@@ -87,6 +95,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 60s
 
   # Stall Service
   stall-service:
@@ -118,7 +127,7 @@ services:
       SPRING_FLYWAY_BASELINE_ON_MIGRATE: ${FLYWAY_BASELINE_ON_MIGRATE:-true}
       
       # OAuth2 Configuration
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${JWT_ISSUER_URI:-http://keycloak:8080/realms/exhibitflow}
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${JWT_ISSUER_URI:-http://localhost:8080/realms/exhibitflow}
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: ${JWT_JWK_SET_URI:-http://keycloak:8080/realms/exhibitflow/protocol/openid-connect/certs}
       
       # Kafka Topics
@@ -127,6 +136,8 @@ services:
       
       # Server Port
       SERVER_PORT: 8081
+    extra_hosts:
+      - "localhost:host-gateway"
     networks:
       - stall-network
     healthcheck:

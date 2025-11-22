@@ -1,10 +1,7 @@
 ### Stall Service API Tests
 ### Base URL
-@baseUrl = http://localhost:8081
-@keycloakUrl = http://localhost:8080
-
-### Variables (Update these with actual values after obtaining token)
-@accessToken = your_access_token_here
+@baseUrl = https://miniature-space-fortnight-p9945qrp4xpf7q46-8081.app.github.dev
+@keycloakUrl = https://miniature-space-fortnight-p9945qrp4xpf7q46-8080.app.github.dev
 
 ###############################################
 # Health Check (No Auth Required)
@@ -14,17 +11,52 @@
 GET {{baseUrl}}/actuator/health
 
 ###############################################
-# Keycloak - Get Access Token
+# Keycloak - Get Access Tokens
 ###############################################
 
-### Get Access Token from Keycloak
-# @name getToken
+### Get Token with Service Account (Client Credentials)
+# @name getServiceToken
 POST {{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=client_credentials
 &client_id=stall-service
-&client_secret=your_client_secret
+&client_secret=stall-service-secret-key-2024
+
+### Get Token for Admin User (Password Grant)
+# @name getAdminToken
+POST {{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
+&client_id=stall-service
+&client_secret=stall-service-secret-key-2024
+&username=admin
+&password=admin123
+
+### Get Token for Manager User
+# @name getManagerToken
+POST {{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
+&client_id=stall-service
+&client_secret=stall-service-secret-key-2024
+&username=manager
+&password=manager123
+
+### Get Token for Viewer User
+# @name getViewerToken
+POST {{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
+&client_id=stall-service
+&client_secret=stall-service-secret-key-2024
+&username=viewer
+&password=viewer123
+
+@accessToken = {{getAdminToken.response.body.access_token}}
 
 ###############################################
 # Stall Management APIs (Require Auth)
