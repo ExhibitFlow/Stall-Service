@@ -162,7 +162,7 @@ All state transitions are idempotent.
 
 ## API Endpoints
 
-- [API_DOC.md](./API_DOC.md) - API Documentation
+- [API_DOCS.md](./API_DOCS.md) - API Documentation
 
 ### Public Endpoints (No Auth Required)
 
