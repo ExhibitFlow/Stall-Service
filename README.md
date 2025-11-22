@@ -162,6 +162,8 @@ All state transitions are idempotent.
 
 ## API Endpoints
 
+- [API_DOC.md](./API_DOC.md) - API Documentation
+
 ### Public Endpoints (No Auth Required)
 
 ```bash
