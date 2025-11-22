@@ -20,7 +20,7 @@ public class SecurityConfig {
             // This is safe because JWT tokens are not stored in cookies and are immune to CSRF attacks
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/actuator/**", "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**", "/api/**").permitAll()
+                .requestMatchers("/actuator/**", "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2
