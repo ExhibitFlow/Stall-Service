@@ -1,0 +1,274 @@
+### Stall Service API Tests
+### Base URL
+@baseUrl = https://miniature-space-fortnight-p9945qrp4xpf7q46-8081.app.github.dev
+@keycloakUrl = https://miniature-space-fortnight-p9945qrp4xpf7q46-8080.app.github.dev
+
+###############################################
+# Health Check (No Auth Required)
+###############################################
+
+### Health Check
+GET {{baseUrl}}/actuator/health
+
+###############################################
+# Keycloak - Get Access Tokens
+###############################################
+
+### Get Token with Service Account (Client Credentials)
+# @name getServiceToken
+POST {{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id=stall-service
+&client_secret=stall-service-secret-key-2024
+
+### Get Token for Admin User (Password Grant)
+# @name getAdminToken
+POST {{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
+&client_id=stall-service
+&client_secret=stall-service-secret-key-2024
+&username=admin
+&password=admin123
+
+### Get Token for Manager User
+# @name getManagerToken
+POST {{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
+&client_id=stall-service
+&client_secret=stall-service-secret-key-2024
+&username=manager
+&password=manager123
+
+### Get Token for Viewer User
+# @name getViewerToken
+POST {{keycloakUrl}}/realms/exhibitflow/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
+&client_id=stall-service
+&client_secret=stall-service-secret-key-2024
+&username=viewer
+&password=viewer123
+
+@accessToken = {{getAdminToken.response.body.access_token}}
+
+###############################################
+# Stall Management APIs (Require Auth)
+###############################################
+
+### Get All Stalls
+GET {{baseUrl}}/api/stalls
+Authorization: Bearer {{accessToken}}
+
+### Get All Stalls with Pagination
+GET {{baseUrl}}/api/stalls?page=0&size=10
+Authorization: Bearer {{accessToken}}
+
+### Filter Stalls by Status - Available
+GET {{baseUrl}}/api/stalls?status=AVAILABLE
+Authorization: Bearer {{accessToken}}
+
+### Filter Stalls by Status - Held
+GET {{baseUrl}}/api/stalls?status=HELD
+Authorization: Bearer {{accessToken}}
+
+### Filter Stalls by Status - Reserved
+GET {{baseUrl}}/api/stalls?status=RESERVED
+Authorization: Bearer {{accessToken}}
+
+### Filter Stalls by Size - Small
+GET {{baseUrl}}/api/stalls?stallSize=SMALL
+Authorization: Bearer {{accessToken}}
+
+### Filter Stalls by Size - Medium
+GET {{baseUrl}}/api/stalls?stallSize=MEDIUM
+Authorization: Bearer {{accessToken}}
+
+### Filter Stalls by Size - Large
+GET {{baseUrl}}/api/stalls?stallSize=LARGE
+Authorization: Bearer {{accessToken}}
+
+### Search Stalls by Location
+GET {{baseUrl}}/api/stalls?location=Hall A
+Authorization: Bearer {{accessToken}}
+
+### Combined Filters - Available Large Stalls
+GET {{baseUrl}}/api/stalls?status=AVAILABLE&stallSize=LARGE
+Authorization: Bearer {{accessToken}}
+
+### Get Stall by ID
+GET {{baseUrl}}/api/stalls/1
+Authorization: Bearer {{accessToken}}
+
+### Get Stall by Code
+GET {{baseUrl}}/api/stalls/code/A-001
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# Create Stall
+###############################################
+
+### Create a New Stall
+POST {{baseUrl}}/api/stalls
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "TEST-001",
+  "size": "MEDIUM",
+  "location": "Test Hall - Section A",
+  "price": 1200.00
+}
+
+###############################################
+# Update Stall
+###############################################
+
+### Update Stall
+PUT {{baseUrl}}/api/stalls/1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "location": "Hall A - North Wing, Row 1 - Updated",
+  "price": 550.00
+}
+
+###############################################
+# Reserve/Release Stall
+###############################################
+
+### Reserve a Stall
+POST {{baseUrl}}/api/stalls/1/reserve
+Authorization: Bearer {{accessToken}}
+
+### Hold a Stall
+POST {{baseUrl}}/api/stalls/1/hold
+Authorization: Bearer {{accessToken}}
+
+### Release a Stall (make it Available)
+POST {{baseUrl}}/api/stalls/1/release
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# Delete Stall
+###############################################
+
+### Delete Stall
+DELETE {{baseUrl}}/api/stalls/1
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# Sample Test Scenarios
+###############################################
+
+### Scenario 1: Find Available Medium Stalls in Hall A
+GET {{baseUrl}}/api/stalls?status=AVAILABLE&stallSize=MEDIUM&location=Hall A
+Authorization: Bearer {{accessToken}}
+
+### Scenario 2: Get All Large Stalls
+GET {{baseUrl}}/api/stalls?stallSize=LARGE
+Authorization: Bearer {{accessToken}}
+
+### Scenario 3: Check Outdoor Stalls
+GET {{baseUrl}}/api/stalls?location=Outdoor
+Authorization: Bearer {{accessToken}}
+
+### Scenario 4: Get Expensive Stalls (using specific codes)
+GET {{baseUrl}}/api/stalls/code/A-203
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{baseUrl}}/api/stalls/code/C-203
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# Error Cases (for testing validation)
+###############################################
+
+### Create Stall with Missing Required Fields
+POST {{baseUrl}}/api/stalls
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "INVALID"
+}
+
+### Create Stall with Duplicate Code
+POST {{baseUrl}}/api/stalls
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "A-001",
+  "size": "SMALL",
+  "location": "Test Location",
+  "price": 500.00
+}
+
+### Get Non-existent Stall
+GET {{baseUrl}}/api/stalls/99999
+Authorization: Bearer {{accessToken}}
+
+### Get Stall with Invalid Code
+GET {{baseUrl}}/api/stalls/code/INVALID-CODE
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# Testing Seeded Data
+###############################################
+
+### Get Hall A Stalls (Codes: A-001 to A-203)
+GET {{baseUrl}}/api/stalls/code/A-001
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{baseUrl}}/api/stalls/code/A-101
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{baseUrl}}/api/stalls/code/A-201
+Authorization: Bearer {{accessToken}}
+
+### Get Hall B Stalls (Codes: B-001 to B-203)
+GET {{baseUrl}}/api/stalls/code/B-001
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{baseUrl}}/api/stalls/code/B-101
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{baseUrl}}/api/stalls/code/B-201
+Authorization: Bearer {{accessToken}}
+
+### Get Hall C Stalls (Codes: C-001 to C-203)
+GET {{baseUrl}}/api/stalls/code/C-001
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{baseUrl}}/api/stalls/code/C-101
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{baseUrl}}/api/stalls/code/C-201
+Authorization: Bearer {{accessToken}}
+
+### Get Outdoor Stalls (Codes: OUT-001 to OUT-003)
+GET {{baseUrl}}/api/stalls/code/OUT-001
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{baseUrl}}/api/stalls/code/OUT-002
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{baseUrl}}/api/stalls/code/OUT-003
+Authorization: Bearer {{accessToken}}

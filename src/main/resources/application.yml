@@ -3,9 +3,9 @@ spring:
     name: stall-service
   
   datasource:
-    url: jdbc:postgresql://localhost:5432/stalldb
-    username: stalluser
-    password: stallpass
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/stalldb}
+    username: ${SPRING_DATASOURCE_USERNAME:stalluser}
+    password: ${SPRING_DATASOURCE_PASSWORD:stallpass}
     driver-class-name: org.postgresql.Driver
   
   jpa:
@@ -18,12 +18,12 @@ spring:
         format_sql: true
   
   flyway:
-    enabled: true
+    enabled: ${SPRING_FLYWAY_ENABLED:true}
     locations: classpath:db/migration
-    baseline-on-migrate: true
+    baseline-on-migrate: ${SPRING_FLYWAY_BASELINE_ON_MIGRATE:true}
   
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -34,11 +34,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/exhibitflow
-          jwk-set-uri: http://localhost:8080/realms/exhibitflow/protocol/openid-connect/certs
+          issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI:http://localhost:8080/realms/exhibitflow}
+          jwk-set-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI:http://localhost:8080/realms/exhibitflow/protocol/openid-connect/certs}
 
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
 
 springdoc:
   api-docs:
@@ -46,7 +46,16 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
 kafka:
   topics:
-    stall-reserved: stall.reserved
-    stall-released: stall.released
+    stall-reserved: ${KAFKA_TOPICS_STALL_RESERVED:stall.reserved}
+    stall-released: ${KAFKA_TOPICS_STALL_RELEASED:stall.released}

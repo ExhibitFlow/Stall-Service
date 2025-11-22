@@ -33,11 +33,11 @@ public class StallController {
     @Operation(summary = "List all stalls with filtering and pagination")
     public ResponseEntity<Page<StallResponse>> getStalls(
             @Parameter(description = "Filter by status") @RequestParam(required = false) StallStatus status,
-            @Parameter(description = "Filter by size") @RequestParam(required = false) StallSize size,
+            @Parameter(description = "Filter by size") @RequestParam(name = "stallSize", required = false) StallSize stallSize,
             @Parameter(description = "Filter by location (partial match)") @RequestParam(required = false) String location,
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        Page<StallResponse> stalls = stallService.getStalls(status, size, location, pageable);
+        Page<StallResponse> stalls = stallService.getStalls(status, stallSize, location, pageable);
         return ResponseEntity.ok(stalls);
     }
 
@@ -45,6 +45,13 @@ public class StallController {
     @Operation(summary = "Get a stall by ID")
     public ResponseEntity<StallResponse> getStallById(@PathVariable Long id) {
         StallResponse stall = stallService.getStallById(id);
+        return ResponseEntity.ok(stall);
+    }
+
+    @GetMapping("/code/{code}")
+    @Operation(summary = "Get a stall by code")
+    public ResponseEntity<StallResponse> getStallByCode(@PathVariable String code) {
+        StallResponse stall = stallService.getStallByCode(code);
         return ResponseEntity.ok(stall);
     }
 

@@ -1,5 +1,8 @@
 # Maven
 target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -17,26 +20,38 @@ buildNumber.properties
 *.ipr
 .vscode/
 .settings/
-.project
 .classpath
-
-# OS
-.DS_Store
-Thumbs.db
+.project
+*.swp
+*.swo
+*~
 
 # Logs
 *.log
 logs/
 
-# Temporary files
-*.tmp
-*.temp
+# OS
+.DS_Store
+Thumbs.db
 
-# Environment files
+# Git
+.git/
+.gitignore
+
+# Environment
 .env
 .env.local
 .env.*.local
 
-# Docker
-*.pid
-docker-compose.override.yml
+# Documentation
+README.md
+docs/
+*.md
+
+# Test coverage
+coverage/
+*.exec
+
+# Temporary files
+*.tmp
+*.bak

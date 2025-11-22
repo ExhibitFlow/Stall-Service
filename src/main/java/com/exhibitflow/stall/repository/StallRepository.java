@@ -20,7 +20,7 @@ public interface StallRepository extends JpaRepository<Stall, Long> {
     @Query("SELECT s FROM Stall s WHERE " +
            "(:status IS NULL OR s.status = :status) AND " +
            "(:size IS NULL OR s.size = :size) AND " +
-           "(:location IS NULL OR LOWER(s.location) LIKE LOWER(CONCAT('%', :location, '%')))")
+           "(:location IS NULL OR :location = '' OR LOWER(CAST(s.location AS string)) LIKE LOWER(CONCAT('%', :location, '%')))")
     Page<Stall> findByFilters(
             @Param("status") StallStatus status,
             @Param("size") StallSize size,

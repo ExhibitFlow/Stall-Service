@@ -36,6 +36,14 @@ public class StallService {
         return mapToResponse(stall);
     }
 
+    @Transactional(readOnly = true)
+    public StallResponse getStallByCode(String code) {
+        log.info("Fetching stall by code: {}", code);
+        Stall stall = stallRepository.findByCode(code)
+                .orElseThrow(() -> new StallNotFoundException("Stall not found with code: " + code));
+        return mapToResponse(stall);
+    }
+
     @Transactional
     public StallResponse createStall(CreateStallRequest request) {
         log.info("Creating new stall with code: {}", request.getCode());
