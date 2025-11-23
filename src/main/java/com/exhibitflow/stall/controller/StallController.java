@@ -30,7 +30,9 @@ public class StallController {
     private final StallService stallService;
 
     @GetMapping
-    @Operation(summary = "List all stalls with filtering and pagination")
+    @Operation(summary = "List all stalls with filtering and pagination", 
+               description = "Requires: VIEWER role or higher")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('VIEWER', 'MANAGER', 'ADMIN')")
     public ResponseEntity<Page<StallResponse>> getStalls(
             @Parameter(description = "Filter by status") @RequestParam(required = false) StallStatus status,
             @Parameter(description = "Filter by size") @RequestParam(name = "stallSize", required = false) StallSize stallSize,
@@ -42,28 +44,36 @@ public class StallController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get a stall by ID")
+    @Operation(summary = "Get a stall by ID",
+               description = "Requires: VIEWER role or higher")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('VIEWER', 'MANAGER', 'ADMIN')")
     public ResponseEntity<StallResponse> getStallById(@PathVariable Long id) {
         StallResponse stall = stallService.getStallById(id);
         return ResponseEntity.ok(stall);
     }
 
     @GetMapping("/code/{code}")
-    @Operation(summary = "Get a stall by code")
+    @Operation(summary = "Get a stall by code",
+               description = "Requires: VIEWER role or higher")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('VIEWER', 'MANAGER', 'ADMIN')")
     public ResponseEntity<StallResponse> getStallByCode(@PathVariable String code) {
         StallResponse stall = stallService.getStallByCode(code);
         return ResponseEntity.ok(stall);
     }
 
     @PostMapping
-    @Operation(summary = "Create a new stall")
+    @Operation(summary = "Create a new stall",
+               description = "Requires: ADMIN role")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StallResponse> createStall(@Valid @RequestBody CreateStallRequest request) {
         StallResponse stall = stallService.createStall(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(stall);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update a stall")
+    @Operation(summary = "Update a stall",
+               description = "Requires: MANAGER role or higher")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     public ResponseEntity<StallResponse> updateStall(
             @PathVariable Long id,
             @Valid @RequestBody UpdateStallRequest request
@@ -73,21 +83,27 @@ public class StallController {
     }
 
     @PostMapping("/{id}/hold")
-    @Operation(summary = "Hold a stall (idempotent)")
+    @Operation(summary = "Hold a stall (idempotent)",
+               description = "Requires: MANAGER role or higher")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     public ResponseEntity<StallResponse> holdStall(@PathVariable Long id) {
         StallResponse stall = stallService.holdStall(id);
         return ResponseEntity.ok(stall);
     }
 
     @PostMapping("/{id}/release")
-    @Operation(summary = "Release a stall (idempotent)")
+    @Operation(summary = "Release a stall (idempotent)",
+               description = "Requires: MANAGER role or higher")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     public ResponseEntity<StallResponse> releaseStall(@PathVariable Long id) {
         StallResponse stall = stallService.releaseStall(id);
         return ResponseEntity.ok(stall);
     }
 
     @PostMapping("/{id}/reserve")
-    @Operation(summary = "Reserve a stall (idempotent)")
+    @Operation(summary = "Reserve a stall (idempotent)",
+               description = "Requires: MANAGER role or higher")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     public ResponseEntity<StallResponse> reserveStall(@PathVariable Long id) {
         StallResponse stall = stallService.reserveStall(id);
         return ResponseEntity.ok(stall);
