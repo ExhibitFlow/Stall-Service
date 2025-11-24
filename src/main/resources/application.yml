@@ -1,6 +1,6 @@
 spring:
   application:
-    name: stall-service
+    name: STALL-SERVICE
   
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/stalldb}
@@ -33,7 +33,7 @@ spring:
   # Security configuration removed - using custom JWT decoder with shared secret (HS512)
   
 jwt:
-  secret: ${JWT_SECRET:your-256-bit-secret-key-for-jwt-tokens-change-in-production}
+  secret: ${JWT_SECRET:your-super-secure-256-bit-secret-key-for-jwt-tokens-change-in-production}
 
 # Identity Service Integration (Custom IAM)
 identity-service:
@@ -71,3 +71,10 @@ kafka:
   topics:
     stall-reserved: ${KAFKA_TOPICS_STALL_RESERVED:stall.reserved}
     stall-released: ${KAFKA_TOPICS_STALL_RELEASED:stall.released}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
